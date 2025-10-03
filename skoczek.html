@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🏇 Problem Skoczka Szachowego - Gra Strategiczna</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 2.5em;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .creator-info {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 15px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      }
+      
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 10px;
+      }
+      
+      .logo {
+        width: 60px;
+        height: 60px;
+        background: white;
+        border-radius: 12px;
+        padding: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .creator-name {
+        font-size: 1.3em;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      }
+      
+      .creator-subtitle {
+        font-size: 0.9em;
+        opacity: 0.9;
+        font-weight: 300;
+      }
+
+      .game-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      input[type="text"] {
+        padding: 12px 20px;
+        border: 2px solid #ddd;
+        border-radius: 25px;
+        font-size: 16px;
+        font-family: "Poppins", sans-serif;
+        transition: all 0.3s ease;
+        min-width: 200px;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-secondary {
+        background: #f8f9fa;
+        color: #333;
+        border: 2px solid #ddd;
+      }
+
+      .btn-secondary:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+      }
+
+      .game-area {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .board-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .board-info {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 20px;
+      }
+
+      .info-card {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 15px;
+        text-align: center;
+        min-width: 120px;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .info-card h3 {
+        font-size: 14px;
+        margin-bottom: 5px;
+        opacity: 0.9;
+      }
+
+      .info-card .value {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        background: white;
+      }
+
+      td {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        vertical-align: middle;
+        border: 2px solid #333;
+        font-size: 28px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        font-weight: bold;
+      }
+
+      td:nth-child(odd) {
+        background-color: #f5f5dc;
+      }
+
+      td:nth-child(even) {
+        background-color: #8b4513;
+        color: white;
+      }
+
+      tr:nth-child(even) td:nth-child(odd) {
+        background-color: #8b4513;
+        color: white;
+      }
+
+      tr:nth-child(even) td:nth-child(even) {
+        background-color: #f5f5dc;
+        color: #333;
+      }
+
+      .visited {
+        background: linear-gradient(135deg, #4caf50, #45a049) !important;
+        color: white !important;
+        transform: scale(0.95);
+      }
+
+      .knight {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+        color: white !important;
+        animation: pulse 1.5s infinite;
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+      }
+
+      .possible-move {
+        background: linear-gradient(135deg, #ffd93d, #f39c12) !important;
+        animation: glow 1s infinite alternate;
+        cursor: pointer;
+      }
+
+      .move-number {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1.1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1.1);
+        }
+      }
+
+      @keyframes glow {
+        0% {
+          box-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+        }
+        100% {
+          box-shadow: 0 0 20px rgba(255, 217, 61, 0.8);
+        }
+      }
+
+      .sidebar {
+        min-width: 350px;
+      }
+
+      .leaderboard {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .leaderboard h3 {
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: 600;
+      }
+
+      .score-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .score-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+      }
+
+      .score-item.first {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #333;
+        font-weight: 700;
+      }
+
+      .score-item.second {
+        background: linear-gradient(135deg, #c0c0c0, #b8b8b8);
+        color: #333;
+        font-weight: 600;
+      }
+
+      .score-item.third {
+        background: linear-gradient(135deg, #cd7f32, #b8860b);
+        color: white;
+        font-weight: 600;
+      }
+
+      .player-name {
+        font-weight: 600;
+      }
+
+      .score-value {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        color: #667eea;
+      }
+
+      .game-stats {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .game-stats h3 {
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 1.3em;
+        font-weight: 600;
+      }
+
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .stat-row:last-child {
+        border-bottom: none;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 2em;
+      }
+
+      .modal .final-score {
+        font-size: 3em;
+        font-weight: 700;
+        color: #667eea;
+        margin: 20px 0;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .game-area {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .sidebar {
+          min-width: auto;
+          width: 100%;
+        }
+
+        td {
+          width: 45px;
+          height: 45px;
+          font-size: 20px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🏇 Problem Skoczka Szachowego</h1>
+      
+      <div class="creator-info">
+        <div class="logo-container">
+          <div class="logo">
+            <svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#667eea"/>
+                  <stop offset="100%" style="stop-color:#764ba2"/>
+                </linearGradient>
+              </defs>
+              <!-- Litera M -->
+              <path d="M15 75 L15 25 L25 25 L40 50 L55 25 L65 25 L65 75 L55 75 L55 40 L45 58 L35 58 L25 40 L25 75 Z" 
+                    fill="url(#logoGradient)" stroke="none"/>
+              <!-- Symbol mądrości - żarówka -->
+              <circle cx="82" cy="30" r="12" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+              <path d="M75 30 Q75 25 82 25 Q89 25 89 30" fill="none" stroke="url(#logoGradient)" stroke-width="2"/>
+              <rect x="79" y="38" width="6" height="8" fill="url(#logoGradient)" rx="1"/>
+              <path d="M76 42 L88 42 M77 45 L87 45" stroke="url(#logoGradient)" stroke-width="2"/>
+              <!-- Podstawa W -->
+              <path d="M15 85 L25 65 L35 80 L45 65 L55 85 L45 85 L40 75 L30 75 L25 85 Z" 
+                    fill="url(#logoGradient)" stroke="none"/>
+            </svg>
+          </div>
+          <div>
+            <div class="creator-name">Fundacja "Więcej Mądrości"</div>
+            <div class="creator-subtitle">Edukacyjne gry strategiczne</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-controls">
+        <input type="text" id="playerName" placeholder="🎮 Wpisz swoje imię" />
+        <button class="btn btn-primary" onclick="startGame()">
+          🚀 Nowa Gra
+        </button>
+        <button class="btn btn-secondary" onclick="showHint()">
+          💡 Podpowiedź
+        </button>
+        <button class="btn btn-secondary" onclick="resetGame()">
+          🔄 Reset
+        </button>
+      </div>
+
+      <div class="game-area">
+        <div class="board-container">
+          <div class="board-info">
+            <div class="info-card">
+              <h3>Ruchy</h3>
+              <div class="value" id="movesCount">0</div>
+            </div>
+            <div class="info-card">
+              <h3>Pozostało</h3>
+              <div class="value" id="remainingFields">64</div>
+            </div>
+            <div class="info-card">
+              <h3>Postęp</h3>
+              <div class="value" id="progressPercent">0%</div>
+            </div>
+          </div>
+          <table id="board"></table>
+        </div>
+
+        <div class="sidebar">
+          <div class="leaderboard">
+            <h3>🏆 Ranking Graczy</h3>
+            <div id="scoresList"></div>
+          </div>
+
+          <div class="game-stats">
+            <h3>📊 Statystyki Sesji</h3>
+            <div class="stat-row">
+              <span>Rozegrane gry:</span>
+              <span id="gamesPlayed">0</span>
+            </div>
+            <div class="stat-row">
+              <span>Najlepszy wynik:</span>
+              <span id="personalBest">0</span>
+            </div>
+            <div class="stat-row">
+              <span>Średni wynik:</span>
+              <span id="averageScore">0</span>
+            </div>
+            <div class="stat-row">
+              <span>Ukończone plansze:</span>
+              <span id="completedBoards">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal końca gry -->
+    <div id="gameModal" class="modal">
+      <div class="modal-content">
+        <h2 id="modalTitle">🎉 Gratulacje!</h2>
+        <p id="modalMessage">Ukończyłeś grę!</p>
+        <div class="final-score" id="finalScore">0</div>
+        <p id="modalDetails">Szczegóły gry</p>
+        <button class="btn btn-primary" onclick="closeModal(); startGame();">
+          🔄 Zagraj ponownie
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal()">
+          ❌ Zamknij
+        </button>
+      </div>
+    </div>
+    
+    <!-- Stopka -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.9); border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 30px; height: 30px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; padding: 4px; display: flex; align-items: center; justify-content: center;">
+          <svg width="22" height="22" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 75 L15 25 L25 25 L40 50 L55 25 L65 25 L65 75 L55 75 L55 40 L45 58 L35 58 L25 40 L25 75 Z" fill="white"/>
+            <circle cx="82" cy="30" r="12" fill="none" stroke="white" stroke-width="3"/>
+            <path d="M75 30 Q75 25 82 25 Q89 25 89 30" fill="none" stroke="white" stroke-width="2"/>
+            <rect x="79" y="38" width="6" height="8" fill="white" rx="1"/>
+            <path d="M15 85 L25 65 L35 80 L45 65 L55 85 L45 85 L40 75 L30 75 L25 85 Z" fill="white"/>
+          </svg>
+        </div>
+        <span style="font-weight: 600; color: #333; font-size: 1.1em;">Fundacja "Więcej Mądrości"</span>
+      </div>
+      <div style="color: #666; font-size: 0.9em; margin-bottom: 5px;">🧠 Rozwijamy umysły poprzez edukacyjne gry strategiczne</div>
+      <div style="color: #999; font-size: 0.8em;">© 2025 - Problem Skoczka Szachowego v2.0</div>
+    </div>
+  </div>
+
+    <script>
+      const N = 8;
+      let board = [];
+      let moveHistory = [];
+      let knightPos = null;
+      let movesCount = 0;
+      let player = "";
+      let gameActive = false;
+      let hintActive = false;
+      let sessionStats = {
+        gamesPlayed: 0,
+        totalMoves: 0,
+        completedBoards: 0,
+        personalBest: 0,
+      };
+
+      const knightMoves = [
+        [-2, -1],
+        [-2, +1],
+        [-1, -2],
+        [-1, +2],
+        [+2, -1],
+        [+2, +1],
+        [+1, -2],
+        [+1, +2],
+      ];
+
+      // Inicjalizacja gry
+      function initGame() {
+        loadSessionStats();
+        showLeaderboard();
+        updateSessionStats();
+      }
+
+      // Inicjuje szachownicę
+      function initBoard() {
+        board = Array.from({ length: N }, () => Array(N).fill(0));
+        moveHistory = [];
+        movesCount = 0;
+        knightPos = null;
+        gameActive = false;
+        hintActive = false;
+        updateGameInfo();
+        drawBoard();
+      }
+
+      function drawBoard() {
+        const tbl = document.getElementById("board");
+        tbl.innerHTML = "";
+
+        for (let i = 0; i < N; i++) {
+          const row = document.createElement("tr");
+          for (let j = 0; j < N; j++) {
+            const cell = document.createElement("td");
+            cell.id = `${i}-${j}`;
+
+            // Numeracja ruchów
+            if (board[i][j] > 0) {
+              cell.classList.add("visited");
+              const moveNum = document.createElement("div");
+              moveNum.className = "move-number";
+              moveNum.textContent = board[i][j];
+              cell.appendChild(moveNum);
+            }
+
+            // Pozycja skoczka
+            if (knightPos && knightPos[0] === i && knightPos[1] === j) {
+              cell.classList.add("knight");
+              cell.innerHTML = "♞";
+            }
+
+            // Możliwe ruchy (podpowiedzi)
+            if (hintActive && isValidMove(i, j) && gameActive) {
+              cell.classList.add("possible-move");
+            }
+
+            cell.onclick = () => moveKnight(i, j);
+            row.appendChild(cell);
+          }
+          tbl.appendChild(row);
+        }
+      }
+
+      function isValidMove(x, y) {
+        if (x < 0 || x >= N || y < 0 || y >= N) return false;
+        if (board[x][y] > 0) return false;
+
+        if (!knightPos) return true; // Pierwszy ruch
+
+        // Sprawdź czy ruch jest ruchem skoczka
+        for (const [dx, dy] of knightMoves) {
+          if (knightPos[0] + dx === x && knightPos[1] + dy === y) return true;
+        }
+        return false;
+      }
+
+      function moveKnight(x, y) {
+        if (!isValidMove(x, y)) return;
+
+        // Oznacz poprzednią pozycję jako odwiedzoną
+        if (knightPos) {
+          board[knightPos[0]][knightPos[1]] = movesCount;
+        }
+
+        // Przenieś skoczka
+        knightPos = [x, y];
+        movesCount++;
+        gameActive = true;
+        hintActive = false;
+
+        // Zapisz ruch w historii
+        moveHistory.push([x, y]);
+
+        updateGameInfo();
+        drawBoard();
+
+        // Sprawdź warunki końca gry
+        if (movesCount === N * N) {
+          endGame(true); // Pełne rozwiązanie
+        } else if (noMovesLeft()) {
+          endGame(false); // Brak możliwych ruchów
+        }
+      }
+
+      function noMovesLeft() {
+        if (!knightPos) return false;
+
+        for (const [dx, dy] of knightMoves) {
+          const nx = knightPos[0] + dx;
+          const ny = knightPos[1] + dy;
+          if (nx >= 0 && nx < N && ny >= 0 && ny < N && board[nx][ny] === 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function endGame(completed) {
+        gameActive = false;
+
+        // Oznacz ostatnie pole
+        if (knightPos) {
+          board[knightPos[0]][knightPos[1]] = movesCount;
+        }
+
+        // Aktualizuj statystyki sesji
+        sessionStats.gamesPlayed++;
+        sessionStats.totalMoves += movesCount;
+        if (completed) {
+          sessionStats.completedBoards++;
+        }
+        if (movesCount > sessionStats.personalBest) {
+          sessionStats.personalBest = movesCount;
+        }
+
+        saveSessionStats();
+        updateLeaderboard(player, movesCount, completed);
+        showGameModal(completed);
+        updateSessionStats();
+        drawBoard();
+      }
+
+      function showGameModal(completed) {
+        const modal = document.getElementById("gameModal");
+        const title = document.getElementById("modalTitle");
+        const message = document.getElementById("modalMessage");
+        const finalScore = document.getElementById("finalScore");
+        const details = document.getElementById("modalDetails");
+
+        if (completed) {
+          title.textContent = "🎉 PERFEKCYJNE ROZWIĄZANIE!";
+          message.textContent = "Gratulacje! Wypełniłeś całą szachownicę!";
+          finalScore.textContent = "64/64";
+          details.textContent =
+            "Ukończyłeś problem skoczka szachowego w 64 ruchach!";
+        } else {
+          title.textContent = "🏁 Koniec Gry";
+          message.textContent = "Brak dostępnych ruchów. Spróbuj ponownie!";
+          finalScore.textContent = `${movesCount}/64`;
+          const percentage = Math.round((movesCount / 64) * 100);
+          details.textContent = `Wypełniłeś ${percentage}% szachownicy w ${movesCount} ruchach.`;
+        }
+
+        modal.style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("gameModal").style.display = "none";
+      }
+
+      function startGame() {
+        player = document.getElementById("playerName").value.trim() || "Anonim";
+        initBoard();
+      }
+
+      function resetGame() {
+        if (gameActive && movesCount > 0) {
+          if (!confirm("Czy na pewno chcesz zresetować obecną grę?")) {
+            return;
+          }
+        }
+        initBoard();
+      }
+
+      function showHint() {
+        if (!gameActive || !knightPos) {
+          alert("Najpierw wykonaj pierwszy ruch!");
+          return;
+        }
+
+        hintActive = !hintActive;
+        const btn = event.target;
+        btn.textContent = hintActive ? "👁️ Ukryj podpowiedzi" : "💡 Podpowiedź";
+        drawBoard();
+      }
+
+      function updateGameInfo() {
+        document.getElementById("movesCount").textContent = movesCount;
+        document.getElementById("remainingFields").textContent =
+          64 - movesCount;
+        document.getElementById("progressPercent").textContent =
+          Math.round((movesCount / 64) * 100) + "%";
+      }
+
+      function updateLeaderboard(name, score, completed) {
+        let scores = JSON.parse(localStorage.getItem("knight_scores") || "[]");
+
+        const entry = {
+          name: name,
+          score: score,
+          completed: completed,
+          date: new Date().toLocaleDateString("pl-PL"),
+          percentage: Math.round((score / 64) * 100),
+        };
+
+        scores.push(entry);
+        scores.sort((a, b) => {
+          // Najpierw ukończone plansze, potem według wyniku
+          if (a.completed && !b.completed) return -1;
+          if (!a.completed && b.completed) return 1;
+          return b.score - a.score;
+        });
+
+        scores = scores.slice(0, 15); // Top 15
+        localStorage.setItem("knight_scores", JSON.stringify(scores));
+        showLeaderboard();
+      }
+
+      function showLeaderboard() {
+        let scores = JSON.parse(localStorage.getItem("knight_scores") || "[]");
+        const list = document.getElementById("scoresList");
+        list.innerHTML = "";
+
+        if (scores.length === 0) {
+          list.innerHTML =
+            '<div style="text-align: center; color: #999; padding: 20px;">Brak wyników. Zagraj pierwszą grę!</div>';
+          return;
+        }
+
+        scores.forEach((entry, index) => {
+          const item = document.createElement("div");
+          item.className = "score-item";
+
+          // Specjalne style dla podium
+          if (index === 0) item.classList.add("first");
+          else if (index === 1) item.classList.add("second");
+          else if (index === 2) item.classList.add("third");
+
+          const trophy = entry.completed
+            ? "👑"
+            : index < 3
+            ? ["🥇", "🥈", "🥉"][index]
+            : "🏆";
+          const status = entry.completed ? " (UKOŃCZONE)" : "";
+
+          item.innerHTML = `
+      <div>
+        <span style="font-size: 18px;">${trophy}</span>
+        <span class="player-name">${entry.name}${status}</span>
+        <div style="font-size: 12px; color: #666;">${entry.date}</div>
+      </div>
+      <div class="score-value">${entry.score}/64 (${entry.percentage}%)</div>
+    `;
+
+          list.appendChild(item);
+        });
+      }
+
+      function loadSessionStats() {
+        const saved = localStorage.getItem("knight_session_stats");
+        if (saved) {
+          sessionStats = { ...sessionStats, ...JSON.parse(saved) };
+        }
+      }
+
+      function saveSessionStats() {
+        localStorage.setItem(
+          "knight_session_stats",
+          JSON.stringify(sessionStats)
+        );
+      }
+
+      function updateSessionStats() {
+        document.getElementById("gamesPlayed").textContent =
+          sessionStats.gamesPlayed;
+        document.getElementById("personalBest").textContent =
+          sessionStats.personalBest + "/64";
+
+        const avgScore =
+          sessionStats.gamesPlayed > 0
+            ? Math.round(sessionStats.totalMoves / sessionStats.gamesPlayed)
+            : 0;
+        document.getElementById("averageScore").textContent = avgScore + "/64";
+        document.getElementById("completedBoards").textContent =
+          sessionStats.completedBoards;
+      }
+
+      // Zamknij modal po kliknięciu na tło
+      window.onclick = function (event) {
+        const modal = document.getElementById("gameModal");
+        if (event.target === modal) {
+          closeModal();
+        }
+      };
+
+      // Inicjalizacja po załadowaniu strony
+      window.onload = function () {
+        initGame();
+        initBoard();
+      };
+    </script>
+  </body>
+</html>
